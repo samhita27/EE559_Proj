@@ -38,6 +38,7 @@ train = [train(:,label_col_tr) train(:,1:label_col_tr-1) train(:,label_col_tr+1:
 label_col_ts = find(ismember(ch_test, 'readmitted'));
 test = [test(:,label_col_ts) test(:,1:label_col_ts-1) test(:,label_col_ts+1:end)];
 
+%% Write to file
 
 test_pp_ds = table2struct(test,'ToScalar',true);
 

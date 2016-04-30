@@ -1,6 +1,6 @@
 %% Load data
 clear;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp.mat';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up.mat';
 
 
 L = load(train_pp_file);
@@ -8,7 +8,7 @@ train = struct2table(L);
 train.patient_nbr = [];
 train.encounter_id = [];
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp.mat';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up.mat';
 
 
 M = load(test_pp_file);
@@ -37,21 +37,25 @@ features = {'age','discharge_disp_mat',...
 
 
 %% Comment out the section for CV
-% k = 25:1:35
-% 
-% err = size(1:numel(k));
-% 
-% for i = 1:numel(k)
-%     tree = fitctree(train,'readmitted','CrossVal','on','KFold',5,'MaxNumSplits',k(i));
-%     err(1,i) = kfoldLoss(tree);
-% end
-% 
-% figure
-% stem(k,err);
+k = 100:5:150
+
+err = size(1:numel(k));
+
+for i = 1:numel(k)
+    tree = fitctree(train,'readmitted','CrossVal','on','KFold',5,'MaxNumSplits',k(i));
+    err(1,i) = kfoldLoss(tree);
+end
+
+figure
+stem(k,err);
+
+
 
 %% Training and Testing
 
-tree = fitctree(train,'readmitted','MaxNumSplits',250);
+%Use cross-validated parameter in the model
+[m,idx] = min(err);
+tree = fitctree(train,'readmitted','MaxNumSplits',k(idx));
 
 y_actual = test.readmitted;
 

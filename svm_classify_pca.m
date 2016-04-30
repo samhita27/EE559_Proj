@@ -1,5 +1,5 @@
 clear;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_norm.mat';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_pca.mat';
 
 
 L = load(train_pp_file);
@@ -9,7 +9,7 @@ train = struct2table(L);
 y = train.readmitted;
 train.readmitted = [];
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_norm.mat';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_pca.mat';
 
 
 M = load(test_pp_file);
@@ -34,15 +34,14 @@ end
 
 
 
-lambda = logspace(0,-3,15);
+% lambda = logspace(0,-2,20);
+lambda = 0.3:0.01:0.8;
 err = size(1:numel(lambda));
-
-S = struct('ClassNames',[1 2 3],'ClassificationCosts',[0 30 60;1 0 1;1 1 0]);
 
 
 for i=1:length(lambda)
     t = templateLinear('Regularization','ridge','Lambda',lambda(i));
-    mdl = fitcecoc(X_tr,y,'CrossVal','on','KFold',5,'Learners',t,'Cost',S);
+    mdl = fitcecoc(X_tr,y,'CrossVal','on','KFold',5,'Learners',t);
     err(1,i) = kfoldLoss(mdl);
 end
 

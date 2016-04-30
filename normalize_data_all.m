@@ -1,12 +1,12 @@
 %% Normalize - zero mean unit variance
 
 clear ;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up.mat';
-train_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_norm.mat';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp.mat';
+train_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_norm.mat';
 
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up.mat';
-test_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_norm.mat';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp.mat';
+test_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_norm.mat';
 
 
 M = load(test_pp_file);
@@ -17,11 +17,11 @@ train = struct2table(L);
 
 %% Select the columns to normalize
 
-train.patient_nbr = [];
-train.encounter_id = [];
+% train.patient_nbr = [];
+% train.encounter_id = [];
 
-test.patient_nbr = [];
-test.encounter_id = [];
+% test.patient_nbr = [];
+% test.encounter_id = [];
 
 % cols_normalize = {'num_lab_procedures','num_medications','number_diagnoses',...
 %    'number_emergency','number_inpatient','number_outpatient',...

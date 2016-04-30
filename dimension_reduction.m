@@ -1,11 +1,11 @@
 %% Normalize - zero mean unit variance
 
 clear ;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp.mat';
-train_pp_csv = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp.csv';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up.mat';
+train_pp_pca = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_pca.mat';
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp.mat';
-test_pp_csv = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp.csv';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up.mat';
+test_pp_pca = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_pca.mat';
 
 M = load(test_pp_file);
 test = struct2table(M);
@@ -50,7 +50,7 @@ Xts = table2array(test);
 
 [coeff,scores,latent] = pca(Xtr);
 
-num_comps = 50;
+num_comps = 105;
 
 Xtr = scores(:,1:num_comps);
 
@@ -61,8 +61,20 @@ Xts = Xts(:,1:num_comps);
 train = array2table([double(Ytr) Xtr]);
 test = array2table([double(Yts) Xts]);
 
+cols = train.Properties.VariableNames;
+
+cols{1} = 'readmitted';
+
+train.Properties.VariableNames = cols;
+test.Properties.VariableNames = cols;
+
+
 %% Write to files
 
-writetable(test,test_pp_csv,'FileType','text');
+test_pp_ds = table2struct(test,'ToScalar',true);
 
-writetable(train,train_pp_csv,'FileType','text');
+save(test_pp_pca,'-struct','test_pp_ds');
+
+train_pp_ds = table2struct(train,'ToScalar',true);
+
+save(train_pp_pca,'-struct','train_pp_ds');
