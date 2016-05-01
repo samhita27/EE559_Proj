@@ -20,6 +20,15 @@ I_train = setdiff(1:total_N,I_test);
 
 test = T(I_test,:);
 train = T(I_train,:);
+%% Choose unique patient ids - Remove this section if no deleteing rows
+T_sort = sortrows(T,{'patient_nbr','encounter_id'},{'ascend','ascend'});
+
+[pt_ids,ia,~] = unique(T_sort.patient_nbr);
+
+T = T_sort(ia,:);
+
+total_N = height(T);
+
 
 %% Save Test Data and don't touch it for now.Save the training data to another file
 test_data_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_diag.mat';
@@ -29,4 +38,8 @@ train_data_set = table2struct(train,'ToScalar',true);
 
 save(test_data_file,'-struct','test_data_set');
 save(train_data_file,'-struct','train_data_set');
+
+
+
+
 

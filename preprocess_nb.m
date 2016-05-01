@@ -127,8 +127,8 @@ T.diag_3 = [];
 
 T = [T array2table(diag1_mat) array2table(diag2_mat) array2table(diag3_mat)];
 
-% T.encounter_id = [];
-% T.patient_nbr = [];
+T.encounter_id = [];
+T.patient_nbr = [];
 
 col_headers = T.Properties.VariableNames;
 label_col = find(ismember(col_headers, 'readmitted'));

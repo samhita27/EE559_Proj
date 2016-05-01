@@ -1,12 +1,12 @@
 %% Normalize - zero mean unit variance
 
 clear ;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp.mat';
-train_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_norm.mat';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_bl.mat';
+train_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_bl_norm.mat';
 
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp.mat';
-test_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_norm.mat';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_bl.mat';
+test_pp_norm = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_bl_norm.mat';
 
 
 M = load(test_pp_file);

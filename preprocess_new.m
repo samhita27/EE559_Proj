@@ -29,6 +29,8 @@ T = [T array2table(gender)];
 %Age - Convert to a number (Age has an impact on health. Lower the age,
 %better the health
 [age,age_cat] = category_to_num(T.age,missing_val);
+% Blow up age vector
+age = category_to_binary(age,missing_val,N,0);
 T.age = [];
 T = [T array2table(age)];
 
@@ -41,13 +43,13 @@ T = [T array2table(admission_type_mat)];
 %discharge_disposition_id - change to uint8
 T.discharge_disposition_id = uint8(T.discharge_disposition_id);
 %Delete columns for which ddi = 11,13,14,19,20,21
-% rowIndicator = [11,13,14,19,20,21];
-% for k=1:length(rowIndicator)
-%     toDelete = T.discharge_disposition_id==rowIndicator(1,k);
-%     T(toDelete,:) = [];
-% end
+rowIndicator = [11,13,14,19,20,21];
+for k=1:length(rowIndicator)
+    toDelete = T.discharge_disposition_id==rowIndicator(1,k);
+    T(toDelete,:) = [];
+end
 % %Update N
-% N = height(T);
+N = height(T);
 discharge_disp_mat = category_to_binary(T.discharge_disposition_id,missing_val,N,29);
 T.discharge_disposition_id = [];
 T = [T array2table(discharge_disp_mat)];
@@ -60,14 +62,14 @@ T = [T array2table(admission_source_mat)];
 
 %max_glu_serum - change to user defined category number
 mgs_vs = {'None','Norm','>200','>300'};
-mgs_cat = {'0','1','2','3'};
+mgs_cat = {'1','2','3','4'};
 max_glu_serum = category_to_num_pd(T.max_glu_serum,missing_val,mgs_vs,mgs_cat);
 T.max_glu_serum = [];
 T = [T array2table(max_glu_serum)];
 
 %A1Cresult - - change to user defined category number
 a1c_vs = {'None','Norm','>7','>8'};
-a1c_cat = {'0','1','2','3'};
+a1c_cat = {'1','2','3','4'};
 A1Cresult = category_to_num_pd(T.A1Cresult,missing_val,a1c_vs,a1c_cat);
 T.A1Cresult = [];
 T = [T array2table(A1Cresult)];
@@ -93,7 +95,7 @@ T = [T array2table(readmitted)];
 
 %Category definitions for medications
 meds_vs = {'No','Up','Steady','Down'};
-meds_cat = {'0','1','2','3'};
+meds_cat = {'1','2','3','4'};
 
 %medecines - change to user defined category number
 medicines = {'acarbose','acetohexamide','chlorpropamide','citoglipton','examide','glimepiride',....
@@ -115,16 +117,25 @@ T = [T array2table(med_mat)];
 T(strcmp(T.diag_1,'?'),:) = [];
 T(strcmp(T.diag_2,'?'),:) = [];
 T(strcmp(T.diag_3,'?'),:) = [];
+pattern = {'^250[.]\d*'};%250.xx - Diabetes
+m1 = cellfun(@(x)(mat2str(x)),T.diag_1,'uniformoutput',false);
+m2 = cellfun(@(x)(mat2str(x)),T.diag_2,'uniformoutput',false);
+m3 = cellfun(@(x)(mat2str(x)),T.diag_3,'uniformoutput',false);
+T.diag_1 = regexprep(m1,pattern,'250');
+T.diag_2 = regexprep(m2,pattern,'250');
+T.diag_3 = regexprep(m3,pattern,'250');
 %Update N
 N = height(T);
 %Convert diagnosis values to a numerical category
-f = @diagnosis_category;
-diag_1 = cellfun(@(x) diagnosis_category(x),T.diag_1);
-diag_2 = cellfun(@(x) diagnosis_category(x),T.diag_2);
-diag_3 = cellfun(@(x) diagnosis_category(x),T.diag_3);
-diag1_mat = category_to_binary(diag_1,missing_val,N,0);
-diag2_mat = category_to_binary(diag_2,missing_val,N,0);
-diag3_mat = category_to_binary(diag_3,missing_val,N,0);
+% f = @diagnosis_category;
+% diag_1 = cellfun(@(x) diagnosis_category(x),T.diag_1);
+% diag_2 = cellfun(@(x) diagnosis_category(x),T.diag_2);
+% diag_3 = cellfun(@(x) diagnosis_category(x),T.diag_3);
+diag_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/diag.mat';
+s = load(diag_file);
+diag1_mat = category_to_binary_pd(T.diag_1,missing_val,N,s.d);
+diag2_mat = category_to_binary_pd(T.diag_1,missing_val,N,s.d);
+diag3_mat = category_to_binary_pd(T.diag_1,missing_val,N,s.d);
 T.diag_1 = [];
 T.diag_2 = [];
 T.diag_3 = [];

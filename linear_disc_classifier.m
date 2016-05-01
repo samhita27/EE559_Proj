@@ -1,20 +1,20 @@
 %% Load data
 clear;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up.mat';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_bl.mat';
 
 
 L = load(train_pp_file);
 train = struct2table(L);
-train.patient_nbr = [];
-train.encounter_id = [];
+% train.patient_nbr = [];
+% train.encounter_id = [];
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up.mat';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_bl.mat';
 
 
 M = load(test_pp_file);
 test = struct2table(M);
-test.patient_nbr = [];
-test.encounter_id = [];
+% test.patient_nbr = [];
+% test.encounter_id = [];
 
 %% Training and Testing
 Y = train.readmitted;
@@ -22,7 +22,7 @@ train.readmitted = [];
 X = double(table2array(train));
 weights = bsxfun(@rdivide,ones(size(Y)),double(Y));
 
-obj = fitcdiscr(X,Y,'DiscrimType','diagLinear','Weight',weights);
+obj = fitcdiscr(X,Y,'DiscrimType','diagLinear');
 
 
 y_actual = test.readmitted;

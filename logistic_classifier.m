@@ -1,5 +1,5 @@
 clear;
-train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_bl_norm.mat';
+train_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/train_pp_up_norm.mat';
 
 
 L = load(train_pp_file);
@@ -9,7 +9,7 @@ train = struct2table(L);
 y = train.readmitted;
 train.readmitted = [];
 
-test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_bl_norm.mat';
+test_pp_file = '/Users/samhitathakur/USC/Projects/EE559/dataset_diabetes/test_pp_up_norm.mat';
 
 
 M = load(test_pp_file);
@@ -34,17 +34,19 @@ end
 
 
 
-lambda = logspace(0,-7,15);
+lambda = logspace(-7,-9,15);
 err = size(1:numel(lambda));
 
 S = struct('ClassNames',[1 2 3],'ClassificationCosts',[0 30 60;1 0 1;1 1 0]);
 
 
 for i=1:length(lambda)
-    t = templateLinear('Regularization','ridge','Lambda',lambda(i));
-    mdl = fitcecoc(X_tr,y,'CrossVal','on','KFold',5,'Learners',t,'Coding','allpairs');
+    t = templateLinear('Regularization','lasso','Lambda',lambda(i));
+    mdl = fitcecoc(X_tr,y,'CrossVal','on','KFold',5,'Learners',t);
     err(1,i) = kfoldLoss(mdl);
 end
+
+tr_acc = (1-mean(err))*100;
 
 figure
 stem(1:numel(lambda),err);
@@ -52,12 +54,10 @@ set(gca,'XTickLabel',lambda); % Change x-axis ticks labels to desired values.
 
 %Use cross-validated parameter in the model
 [m,idx] = min(err);
-t = templateLinear('Regularization','ridge','Lambda',lambda(idx));
+t = templateLinear('Learner','logistic','Regularization','lasso','Lambda',lambda(idx));
 mdl = fitcecoc(X_tr,y,'Learners',t);
 
 %Apply on testing
 y_pred = predict(mdl,X_ts);
 
 classification_report(y_actual,y_pred,0);
-
-
